@@ -25,9 +25,9 @@ contract Retirement {
 	}
 
 	receive() external payable {
-		accounts[msg.sender]=accounts[msg.sender]+(msg.value*0.99);
+		accounts[msg.sender]=accounts[msg.sender]+(msg.value*99/100);
 		emit IncomingPayment(msg.sender, msg.value);
-		owner.transfer(msg.value*0.01);
+		payable(owner).transfer(msg.value*1/100);
 	}
 
 	function take_pension () public timeConditionFullfiled {
