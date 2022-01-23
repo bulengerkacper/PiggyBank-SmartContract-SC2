@@ -22,9 +22,9 @@ contract Retirement {
 
 //czy push zadziala na aktualizacje !?
 	receive() external payable {
-        accounts[msg.sender]=accounts[msg.sender]+msg.value;
+        accounts[msg.sender]=accounts[msg.sender]+(msg.value*0.99);
         emit IncomingPayment(msg.sender, msg.value);
-        //owner.send(address(this).balance*0,001);
+        owner.transfer(msg.value*0.01);
 	}
 
 	function take_pension () public {
