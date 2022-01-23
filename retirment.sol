@@ -13,22 +13,24 @@ contract Retirement {
 	event IncomingPayment(address acc, uint256 amount);
 	event OutgoingPayment(address acc, uint256 amount);
 
-//default value should be useful but solidity seems to not have it.
-	constructor(uint _howManyDays) {
-		//convert_to_days=12*60*60*_whenEnd
+    modifier timeConditionFullfiled {
+        require(block.timestamp > startofRetirment);
+        _;
+    }
+       
+	constructor(uint _howManyDays) { //lack of default params in solidity :(
+		//convert_to_days=12*60*60*_howManyDays
 		startofRetirment = block.timestamp + _howManyDays;
 		owner=msg.sender;
 	}
 
-//czy push zadziala na aktualizacje !?
 	receive() external payable {
         accounts[msg.sender]=accounts[msg.sender]+(msg.value*0.99);
         emit IncomingPayment(msg.sender, msg.value);
         owner.transfer(msg.value*0.01);
 	}
 
-	function take_pension () public {
-        require(block.timestamp > startofRetirment);
+	function take_pension () public timeConditionFullfiled {
         payable(msg.sender).transfer(accounts[msg.sender]);
         emit OutgoingPayment(msg.sender, accounts[msg.sender]);
 	}
